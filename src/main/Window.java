@@ -10,7 +10,6 @@ public class Window extends Canvas{
 	
 	private static final long serialVersionUID = 1L;
 
-	//Window (JFrame)
 	public Window(int width, int height, String title, Main main){
 		JFrame frame = new JFrame(title);
 		
