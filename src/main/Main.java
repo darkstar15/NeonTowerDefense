@@ -1,37 +1,54 @@
 package main;
 
+import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
 
 public class Main extends Canvas implements Runnable{
-	
-	private static final long serialVersionUID = 1L;
-	private static final int WIDTH = 1080;
-	private static final int HEIGHT = 720;
-	
-	public Main main;
-	
-	public int tickCount = 0;
-	public Thread thread;
-	public boolean running = false;
 
-	//main constructor
+	private static final long serialVersionUID = 1L;
+	public static final int WIDTH = 1080;
+	public static final int HEIGHT = 720;
+	public int tickCount = 0;
+	
+	private boolean running = false;
+	
+	private JFrame frame;
+	
+	//create a window
 	public Main(){
-		new Window(WIDTH, HEIGHT, "NeonTowerDefense credits: Bram en Jason", this);
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setMaximumSize(new Dimension(WIDTH, HEIGHT));
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		
+		frame = new JFrame("NeonTowerDefense credits: Bram en jason");
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.add(this, BorderLayout.CENTER);
+		frame.pack();
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 	
+	//start thread
 	public synchronized void start(){
 		running = true;
 		new Thread(this).start();
 	}
 	
+	//stop thread
 	public synchronized void stop(){
 		running = false;
 	}
-	
-	//run method
+
 	public void run() {
 		long lastTime = System.nanoTime();
 		double nsPerTick = 1000000000D/60D;
@@ -43,17 +60,16 @@ public class Main extends Canvas implements Runnable{
 		double delta = 0;
 		
 		//main game loop
-		while(running = true){
+		while(running){
 			long now = System.nanoTime();
-			delta += (now- lastTime)/nsPerTick;
-			lastTime = now;
+			delta += (now - lastTime)/nsPerTick;
+			lastTime=now;
 			boolean shouldRender = true;
 			
 			while(delta >=1){
-				ticks++;
+				ticks ++;
 				tick();
 				delta--;
-				shouldRender = true;
 			}
 			
 			try{
@@ -67,33 +83,45 @@ public class Main extends Canvas implements Runnable{
 				render();
 			}
 			
-			if(System.currentTimeMillis() - lastTimer >=1000){
+			if(System.currentTimeMillis() - lastTimer >= 1000){
 				lastTimer += 1000;
-				System.out.println(ticks + "ticks, " + frames + " frames");
+				System.out.println(ticks + " ticks " + frames + " frames ");
 				frames = 0;
 				ticks = 0;
 			}
 			
 			
+			
 		}
-		
 	}
 	
 	//tick method
-	private void tick(){
+	public void tick(){
 		tickCount++;
 	}
 	
-	//Render method
-	private void render(){
-		//BufferStrategy
+	//render method
+	public void render(){
+		//BufferedStrategy
+		BufferStrategy bs =  getBufferStrategy();
+		if(bs == null){
+			createBufferStrategy(3);
+			return;
+		}
+		
+		Graphics g = bs.getDrawGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		
+		g.dispose();
+		bs.show();
 		
 	}
-
+	
 	//main method
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		new Main().start();
 	}
+	
 }
