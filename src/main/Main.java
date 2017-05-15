@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -15,9 +16,12 @@ public class Main extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	public static final int WIDTH = 1080;
 	public static final int HEIGHT = 720;
-	public int tickCount = 0;
 	
+	public int tickCount = 0;
 	private boolean running = false;
+	
+	private BufferedImage spriteSheet = null;
+	private BufferedImage tank;
 	
 	private JFrame frame;
 	
@@ -38,6 +42,20 @@ public class Main extends Canvas implements Runnable{
 		frame.setVisible(true);
 	}
 	
+	public void init(){
+		BufferedImageLoader loader = new BufferedImageLoader();
+		
+		try {
+			spriteSheet = loader.loadImage("/spriteSheet.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("couldn't load the file");
+		}
+		
+		SpriteSheet ss = new SpriteSheet(spriteSheet);
+		tank = ss.grabImage(2, 1, 32, 32);
+	}
+	
 	//start thread
 	public synchronized void start(){
 		running = true;
@@ -50,6 +68,7 @@ public class Main extends Canvas implements Runnable{
 	}
 
 	public void run() {
+		init();
 		long lastTime = System.nanoTime();
 		double nsPerTick = 1000000000D/60D;
 		
@@ -110,9 +129,11 @@ public class Main extends Canvas implements Runnable{
 		}
 		
 		Graphics g = bs.getDrawGraphics();
+		
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
+		g.drawImage(tank, 100, 100, null);
 		
 		g.dispose();
 		bs.show();
