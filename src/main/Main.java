@@ -48,7 +48,8 @@ public class Main extends Canvas implements Runnable{
 	public synchronized void stop(){
 		running = false;
 	}
-
+	
+	//run method
 	public void run() {
 		long lastTime = System.nanoTime();
 		double nsPerTick = 1000000000D/60D;
