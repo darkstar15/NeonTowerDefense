@@ -11,9 +11,11 @@ public class Main extends Canvas implements Runnable{
 	private static final int WIDTH = 1080;
 	private static final int HEIGHT = 720;
 	
+	public Main main;
+	
 	public int tickCount = 0;
-	private Thread thread;
-	private boolean running = false;
+	public Thread thread;
+	public boolean running = false;
 
 	//main constructor
 	public Main(){
@@ -85,19 +87,7 @@ public class Main extends Canvas implements Runnable{
 	//Render method
 	private void render(){
 		//BufferStrategy
-		BufferStrategy bs = this.getBufferStrategy();
-		if(bs == null){
-			this.createBufferStrategy(3);
-			return;
-		}
 		
-		Graphics g = bs.getDrawGraphics();
-		
-		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
-		g.dispose();
-		bs.show();
 		
 		
 	}
